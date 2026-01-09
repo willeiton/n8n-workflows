@@ -1,0 +1,14 @@
+# IDEs
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# n8n runtime data (if you ever switch to bind mounts)
+n8n-data/
+*.sqlite
+
+# Logs
+*.log
