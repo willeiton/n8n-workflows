@@ -1,0 +1,263 @@
+{
+  "name": "opene-meteo",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 18,
+              "triggerAtMinute": 40
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -464,
+        32
+      ],
+      "id": "c38d84be-d22e-4546-ba96-11b33f145505",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://api.open-meteo.com/v1/forecast?latitude=3.4516&longitude=-76.5320&current_weather=true",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -192,
+        32
+      ],
+      "id": "47a05ae1-77c2-4a06-af04-a7f76b6cb437",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "680c3a90-737b-4deb-8e01-0bf45ebb018a",
+              "leftValue": "={{$json[\"current_weather\"][\"weathercode\"]}}",
+              "rightValue": 2,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        32,
+        32
+      ],
+      "id": "353c6d43-2cca-404b-a8c3-7047f16eb432",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "sendTo": "willianleitondev@gmail.com",
+        "subject": "Cooler Conditions and Possible Rain",
+        "message": "={{ $json.content.parts[0].text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        800,
+        112
+      ],
+      "id": "c85d9d71-62fa-47ce-a979-951f8d81380c",
+      "name": "Send a message",
+      "webhookId": "136f0997-653b-4cca-aec9-ce1fc3314839",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "PLCl7WW2Ldrp0jmM",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "20252249-b047-4f52-909a-cababa209eb4",
+              "name": "current_weather.temperature",
+              "value": "={{$json[\"current_weather\"][\"temperature\"]}}",
+              "type": "number"
+            },
+            {
+              "id": "52420abf-fb43-4c15-926b-b01dda0afdb0",
+              "name": "current_weather.weathercode",
+              "value": "={{$json[\"current_weather\"][\"weathercode\"]}}",
+              "type": "number"
+            },
+            {
+              "id": "7a245a84-6c06-467f-b8a1-1641f35007b7",
+              "name": "summary",
+              "value": "=🌤️ Weather update:\n\nThe current temperature is {{ $json.current_weather.temperature }}°C.\nThe weather condition code is {{ $json.current_weather.weathercode }}.\n\nHave a great day!\n",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        240,
+        0
+      ],
+      "id": "d11f1f11-d9c0-4e4d-840b-7c7e225368f4",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-flash-latest",
+          "mode": "list",
+          "cachedResultName": "models/gemini-flash-latest"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Your are an assistant that will help to let the users know if it will rain or nor, more precisely the rain possibility. To sum up, you will create a simple html  to inform the  user the current possibility of rain, that html will be sent so you will exclusively and only provide that, nothing else\n\nThe data provided by open-meteo are:\nTemperature(C):\n{{ $json.current_weather.temperature }}\n\nweather code:\n{{ $json.current_weather.weathercode }}\n\nlocation: Cali, Colombia"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        448,
+        0
+      ],
+      "id": "7a0a27c9-c8e5-4b5d-b177-fe290991a4ac",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "rJrfLSSHAAlPNzxZ",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Schedule Trigger": [
+      {
+        "json": {
+          "timestamp": "2026-01-03T18:24:31.233-05:00",
+          "Readable date": "January 3rd 2026, 6:24:31 pm",
+          "Readable time": "6:24:31 pm",
+          "Day of week": "Saturday",
+          "Year": "2026",
+          "Month": "January",
+          "Day of month": "03",
+          "Hour": "18",
+          "Minute": "24",
+          "Second": "31",
+          "Timezone": "America/New_York (UTC-05:00)"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "6f5e010b-7f78-48c0-8d57-979f00f9614b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1a14b606a8632d7da10bc1321717de74e491d0fcc5da77392fd648228dcf58db"
+  },
+  "id": "lTmmr4FaJsSIHPb5",
+  "tags": []
+}
