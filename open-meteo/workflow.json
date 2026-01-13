@@ -3,49 +3,6 @@
   "nodes": [
     {
       "parameters": {
-        "rule": {
-          "interval": [
-            {
-              "triggerAtHour": 18,
-              "triggerAtMinute": 40
-            }
-          ]
-        }
-      },
-      "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.3,
-      "position": [
-        -464,
-        32
-      ],
-      "id": "c38d84be-d22e-4546-ba96-11b33f145505",
-      "name": "Schedule Trigger"
-    },
-    {
-      "parameters": {
-        "url": "https://api.open-meteo.com/v1/forecast?latitude=3.4516&longitude=-76.5320&current_weather=true",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.3,
-      "position": [
-        -192,
-        32
-      ],
-      "id": "47a05ae1-77c2-4a06-af04-a7f76b6cb437",
-      "name": "HTTP Request"
-    },
-    {
-      "parameters": {
         "conditions": {
           "options": {
             "caseSensitive": true,
@@ -71,7 +28,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        32,
+        448,
         32
       ],
       "id": "353c6d43-2cca-404b-a8c3-7047f16eb432",
@@ -87,7 +44,7 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.2,
       "position": [
-        800,
+        1216,
         112
       ],
       "id": "c85d9d71-62fa-47ce-a979-951f8d81380c",
@@ -129,7 +86,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        240,
+        656,
         0
       ],
       "id": "d11f1f11-d9c0-4e4d-840b-7c7e225368f4",
@@ -146,7 +103,7 @@
         "messages": {
           "values": [
             {
-              "content": "=Your are an assistant that will help to let the users know if it will rain or nor, more precisely the rain possibility. To sum up, you will create a simple html  to inform the  user the current possibility of rain, that html will be sent so you will exclusively and only provide that, nothing else\n\nThe data provided by open-meteo are:\nTemperature(C):\n{{ $json.current_weather.temperature }}\n\nweather code:\n{{ $json.current_weather.weathercode }}\n\nlocation: Cali, Colombia"
+              "content": "=Your are an assistant that will help to let the users know if it will rain or nor, more precisely the rain possibility andd the forcast for the next 3 hours. To sum up, you will create a simple html  to inform the  user the current possibility of rain and the forecast for the next three hours including if is possible rain or not, that html will be sent so you will exclusively and only provide that, nothing else\n\nThe data provided by open-meteo are:\nTemperature(C):\n{{ $json.current_weather.temperature }}\n\nweather code:\n{{ $json.current_weather.weathercode }}\n\nnext three hours forecast array:\n{{ $json.hourly }}\n\nlocation: Cali, Colombia"
             }
           ]
         },
@@ -156,7 +113,7 @@
       "type": "@n8n/n8n-nodes-langchain.googleGemini",
       "typeVersion": 1.1,
       "position": [
-        448,
+        864,
         0
       ],
       "id": "7a0a27c9-c8e5-4b5d-b177-fe290991a4ac",
@@ -167,53 +124,73 @@
           "name": "Google Gemini(PaLM) Api account"
         }
       }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -48,
+        112
+      ],
+      "id": "ea2a03b5-d13e-4c1c-871b-d5a5bb42085a",
+      "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {
+        "url": "https://api.open-meteo.com/v1/forecast?latitude=3.4516&longitude=-76.5320&current_weather=true",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        224,
+        -32
+      ],
+      "id": "47a05ae1-77c2-4a06-af04-a7f76b6cb437",
+      "name": "Current"
+    },
+    {
+      "parameters": {
+        "url": "https://api.open-meteo.com/v1/forecast?latitude=3.4516&longitude=-76.5320&hourly=temperature_2m,precipitation,weathercode&forecast_hours=3",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        656,
+        208
+      ],
+      "id": "f56ed2d5-a2c1-4b4d-b56b-031f0243b804",
+      "name": "Forecast"
     }
   ],
-  "pinData": {
-    "Schedule Trigger": [
-      {
-        "json": {
-          "timestamp": "2026-01-03T18:24:31.233-05:00",
-          "Readable date": "January 3rd 2026, 6:24:31 pm",
-          "Readable time": "6:24:31 pm",
-          "Day of week": "Saturday",
-          "Year": "2026",
-          "Month": "January",
-          "Day of month": "03",
-          "Hour": "18",
-          "Minute": "24",
-          "Second": "31",
-          "Timezone": "America/New_York (UTC-05:00)"
-        },
-        "pairedItem": {
-          "item": 0
-        }
-      }
-    ]
-  },
+  "pinData": {},
   "connections": {
-    "HTTP Request": {
-      "main": [
-        [
-          {
-            "node": "If",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Schedule Trigger": {
-      "main": [
-        [
-          {
-            "node": "HTTP Request",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "If": {
       "main": [
         [
@@ -246,6 +223,44 @@
           }
         ]
       ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Current",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Forecast",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Current": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Forecast": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -253,7 +268,7 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "6f5e010b-7f78-48c0-8d57-979f00f9614b",
+  "versionId": "f2564e97-7aed-4eab-860e-909ad4566c77",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "1a14b606a8632d7da10bc1321717de74e491d0fcc5da77392fd648228dcf58db"
